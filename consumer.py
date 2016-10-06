@@ -51,6 +51,7 @@ def do_work(filename):
 
 def callback(channel, method, properties, body):
     do_work(body)
+    channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
 if __name__ == "__main__":
@@ -75,7 +76,7 @@ if __name__ == "__main__":
                     "productCount INT, orderDate DATE)")
 
         path = config.ftp['path']
-        channel.basic_consume(callback, queue='process-csv', no_ack=True)
+        channel.basic_consume(callback, queue='process-csv')
         channel.start_consuming()
 
     except psycopg2.DatabaseError as e:

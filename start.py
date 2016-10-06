@@ -8,14 +8,14 @@ import config
 ftp = FTP(host=config.ftp['host'], user=config.ftp['user'], passwd=config.ftp['password'])
 
 
-url = 'amqp://guest:guest@localhost/%2f'
+url = config.rabbitmq['url']
 
 params = pika.URLParameters(url)
 params.socket_timeout = 5
 
 connection = pika.BlockingConnection(params)
 channel = connection.channel()
-channel.queue_declare(queue='process-csv')
+channel.queue_declare(queue='process-csv', durable=True)
 
 
 filelist = ftp.mlsd(path=config.ftp['path'])
